@@ -18,7 +18,7 @@ pi_ip = "10.42.0.167"
 
 # functions
 
-def check_pi_connection(windows, pi_user, pi_ip, pi_pass):
+def check_pi_connection(windows):
     if windows:
         # Windows native SSH doesn't have sshpass.
         # We use a shell pipe to feed the password to stdin.
