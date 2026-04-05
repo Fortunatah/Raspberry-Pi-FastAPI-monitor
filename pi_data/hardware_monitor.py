@@ -8,6 +8,7 @@
 
 import subprocess
 import datetime
+import sys
 
 ## variables
 
@@ -17,22 +18,36 @@ pi_ip = "10.42.0.167"
 
 # functions
 
-def check_pi_connection():
-
-    # The SSH command using sshpass for one-liner execution
-    # -o ConnectTimeout=3 ensures the script doesn't hang forever if the cable is out
-    cmd = [
-        "sshpass", "-p", pi_pass, 
-        "ssh", "-o", "StrictHostKeyChecking=no", 
-        "-o", "ConnectTimeout=3",
-        f"{pi_user}@{pi_ip}", 
-        "echo 'Connection Successful'"
-    ]
+def check_pi_connection(windows, pi_user, pi_ip, pi_pass):
+    if windows:
+        # Windows native SSH doesn't have sshpass.
+        # We use a shell pipe to feed the password to stdin.
+        # Note: This requires shell=True to work correctly on Windows.
+        cmd = f"echo {pi_pass} | ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"echo Connection Successful\""
+    else:
+        # Your original Linux/macOS logic using sshpass
+        cmd = [
+            "sshpass", "-p", pi_pass, 
+            "ssh", "-o", "StrictHostKeyChecking=no", 
+            "-o", "ConnectTimeout=3",
+            f"{pi_user}@{pi_ip}", 
+            "echo 'Connection Successful'"
+        ]
 
     try:
-        # Run the command and capture output
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return True
+        # For Windows, we pass the string command and set shell=True
+        # For Linux, we pass the list
+        is_shell = True if windows else False
+        
+        result = subprocess.run(
+            cmd, 
+            capture_output=True, 
+            text=True, 
+            check=True, 
+            shell=is_shell
+        )
+        
+        return "Connection Successful" in result.stdout
     except subprocess.CalledProcessError:
         return False
     
@@ -78,7 +93,11 @@ def collect_up_time():
 
 class raspberry_pi_data():
     def __init__(self):
-        self.connected = check_pi_connection()
+        if sys.platform == "win32":
+            self.windows = True
+        else:
+            self.windows = False
+        self.connected = check_pi_connection(self.windows)
     
     def hw_data(self):
         ## get the cpu first
