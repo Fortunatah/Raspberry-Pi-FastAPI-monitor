@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="refresh" content="5">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiMonitor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Raspberry Pi Status</h1>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>CPU Temp</h3>
+                <div class="value text-warning">{{ cpu_temp }}°C</div>
+            </div>
+
+            <div class="card">
+                <h3>Uptime</h3>
+                <div class="value small-text">{{ uptime }}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
