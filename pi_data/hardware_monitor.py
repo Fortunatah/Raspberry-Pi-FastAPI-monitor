@@ -20,7 +20,7 @@ pi_ip = "10.42.0.167"
 
 def check_pi_connection(windows):
     if windows:
-        cmd = f"echo {pi_pass} | ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"echo Connection Successful\""
+        cmd = f"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"echo Connection Successful\""
     else:
         cmd = [
             "sshpass", "-p", pi_pass, 
@@ -47,7 +47,7 @@ def check_pi_connection(windows):
     
 def collect_cpu_info(windows):
     if windows:
-        cmd = f"echo {pi_pass} | ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"cat /sys/class/hwmon/hwmon*/temp1_input\""
+        cmd = f"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"cat /sys/class/hwmon/hwmon*/temp1_input\""
     else:
         # The SSH command using sshpass for one-liner execution
         # -o ConnectTimeout=3 ensures the script doesn't hang forever if the cable is out
@@ -74,7 +74,7 @@ def collect_cpu_info(windows):
 
 def collect_up_time(windows):
     if windows:
-        cmd = f"echo {pi_pass} | ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"cat /proc/uptime\""
+        cmd = f"ssh -o StrictHostKeyChecking=no -o ConnectTimeout=3 {pi_user}@{pi_ip} \"cat /proc/uptime\""
     else:
         # The SSH command using sshpass for one-liner execution
         # -o ConnectTimeout=3 ensures the script doesn't hang forever if the cable is out
